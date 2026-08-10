@@ -1,0 +1,62 @@
+---
+title: "Fushimi Inari, at Dawn"
+description: "A walk through the thousand gates, and a little math about how they're spaced."
+date: 2026-03-14
+tags: ["japan", "travel", "photography"]
+category: "trip"
+draft: true 
+cover: "/images/torii.png"
+---
+
+I got to the base of the mountain before sunrise, while the vendors were still
+stacking crates. By the time the light hit the vermilion gates, the path had
+already filled with people — but for about twenty minutes, it was just me and
+the mountain.
+
+## The gates
+
+The **senbon torii** ("thousand torii gates") aren't literally a thousand —
+more like ten thousand, donated over centuries by individuals and businesses
+hoping for good fortune. Each one is inscribed with the donor's name and the
+date.
+
+| Section       | Approx. gates | Elevation gain |
+|---------------|---------------|-----------------|
+| Base to Okusha | ~450          | 90 m            |
+| Okusha to Yotsutsuji | ~600    | 150 m           |
+| Yotsutsuji to summit | ~1,200  | 130 m           |
+
+<figure>
+  <img src="/images/torii.png" alt="Rows of vermilion torii gates on a forested mountain path" />
+  <figcaption>The gates near Yotsutsuji, just after sunrise.</figcaption>
+</figure>
+
+## A little math
+
+If gates are spaced roughly evenly along the path with average spacing
+$d \approx 0.9\text{ m}$, and the path to the summit is about
+$L \approx 4\text{ km}$, then a rough estimate of the gate count is:
+
+$$
+N \approx \frac{L}{d} = \frac{4000}{0.9} \approx 4{,}444
+$$
+
+Which lines up reasonably well with the commonly cited figure of "thousands"
+of gates, even if the popular name rounds down.
+
+You can also express the cumulative climb as a simple sum over sections
+$i = 1, \dots, n$ with elevation gain $h_i$:
+
+$$
+H_{\text{total}} = \sum_{i=1}^{n} h_i
+$$
+
+which, per the table above, comes to about $370\text{ m}$ from base to summit.
+
+## Practical notes
+
+- Go before 7am if you want the gates to yourself.
+- Bring cash — the small shrines along the way sell little else.
+- The full loop takes 2–3 hours at an easy pace.
+
+See the [map](/map) for exactly where these photos were taken.

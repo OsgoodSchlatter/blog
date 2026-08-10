@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+allArticles.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = ['all', ...new Set(allArticles.map((p) => p.data.category))];
+---
+<Layout title="Osgood's diary">
+  <div class="filter-bar" role="group" aria-label="Filter by category">
+    {categories.map((c) => (
+      <button type="button" class="filter-btn" data-category={c}>{c}</button>
+    ))}
+  </div>
+
+  <ul class="article-list" id="article-list">
+    {allArticles.map((post) => (
+      <li data-category={post.data.category}>
+        <a href={`/articles/${post.id}/`}>
+          <span class="category-label">{post.data.category}</span>
+          <h2>{post.data.title}</h2>
+          <time datetime={post.data.date.toISOString()}>
+            {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+          {post.data.description && <p>{post.data.description}</p>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 1.5em 0;
+  }
+  .filter-btn {
+    font-family: var(--sans);
+    font-size: 0.82em;
+    text-transform: capitalize;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 14px;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  .article-list { list-style: none; padding: 0; margin: 2em 0; }
+  .article-list li { margin-bottom: 2em; }
+  .article-list a { text-decoration: none; color: inherit; display: block; }
+  .category-label {
+    font-family: var(--sans);
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-2);
+  }
+  .article-list h2 { margin: 0.1em 0 0.15em; color: var(--ink); }
+  .article-list a:hover h2 { color: var(--accent-2); }
+  .article-list time {
+    font-family: var(--sans);
+    font-size: 0.85em;
+    color: var(--muted);
+  }
+  .article-list p {
+    font-family: var(--sans);
+    font-size: 0.95em;
+    color: var(--muted);
+    margin: 0.4em 0 0;
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const items = document.querySelectorAll('#article-list li');
+
+  function setActive(category: string) {
+    buttons.forEach((b) => b.classList.toggle('active', (b as HTMLElement).dataset.category === category));
+    items.forEach((li) => {
+      const match = category === 'all' || (li as HTMLElement).dataset.category === category;
+      (li as HTMLElement).style.display = match ? '' : 'none';
+    });
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setActive((btn as HTMLElement).dataset.category as string);
+    });
+  });
+
+  setActive('all');
+</script>

@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Gallery from '../components/Gallery.astro';
+import { getCollection } from 'astro:content';
+
+const photos = await getCollection('photos');
+
+const galleryPhotos = photos.filter((p) => p.data.display !== false).map((p) => ({
+  id: p.id,
+  title: p.data.title ?? p.data.location.name,
+  caption: p.data.caption,
+  date: p.data.date.toISOString(),
+  image: p.data.image,
+  locationName: p.data.location.name,
+  // display: p.boolean().default(true),
+  href: p.data.article ? `/articles/${p.data.article}/` : undefined,
+}));
+---
+<Layout title="Gallery — Osgood's diary">
+  <Gallery photos={galleryPhotos} />
+</Layout>
+
+<style>
+  .intro {
+    font-family: var(--sans);
+    color: var(--muted);
+    margin-top: -0.5em;
+  }
+</style>

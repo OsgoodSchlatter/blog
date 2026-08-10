@@ -1,0 +1,356 @@
+---
+export interface GalleryPhoto {
+  id: string;
+  title: string;
+  caption: string;
+  date: string;        // ISO string
+  image: string;
+  locationName: string;
+  href?: string;
+  display?: boolean; 
+}
+
+interface Props {
+  photos: GalleryPhoto[];
+}
+const { photos } = Astro.props;
+---
+<div class="gallery-controls">
+  <div class="control-group">
+    <span class="label">Sort by</span>
+    <div class="btn-group" role="group" aria-label="Sort gallery">
+      <button type="button" data-sort="date" class="active">Date</button>
+      <button type="button" data-sort="location">Location</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <span class="label">View</span>
+    <div class="btn-group" role="group" aria-label="Gallery view">
+      <button type="button" data-view="single">Single</button>
+      <button type="button" data-view="grid" class="active">Grid</button>
+    </div>
+  </div>
+</div>
+
+<div id="gallery-grid" class="gallery-grid view-grid" data-photos={JSON.stringify(photos)}>
+  <!-- populated by script -->
+</div>
+
+<div id="lightbox" class="lightbox" hidden>
+  <div class="lightbox-inner">
+    <button type="button" class="lightbox-close" aria-label="Close">&times;</button>
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption">
+      <h3 id="lightbox-title"></h3>
+      <p id="lightbox-meta"></p>
+      <a id="lightbox-link" href="#" style="display:none">Read more →</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .gallery-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-bottom: 1.5em;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-group {
+    display: flex;
+    gap: 6px;
+  }
+  .btn-group button {
+    font-family: var(--sans);
+    font-size: 0.85em;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 14px;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .btn-group button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+
+  /* Grid view (default) */
+  .gallery-grid.view-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .gallery-grid.view-grid :global(.gallery-item img) {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Single / large view: one column, bigger images */
+  .gallery-grid.view-single {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .gallery-grid.view-single :global(.gallery-item img) {
+    aspect-ratio: 3 / 2;
+  }
+  .gallery-grid.view-single :global(.gallery-item .meta h3) {
+    font-size: 1.05em;
+  }
+  .gallery-grid.view-single :global(.gallery-item .meta p) {
+    font-size: 0.85em;
+  }
+  .gallery-grid.view-single :global(.gallery-group-heading) {
+    text-align: center;
+  }
+
+  :global(.gallery-item) {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    font: inherit;
+    cursor: zoom-in;
+  }
+  :global(.gallery-item img) {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  :global(.gallery-item .meta) {
+    font-family: var(--sans);
+    margin-top: 6px;
+  }
+  :global(.gallery-item .meta h3) {
+    font-size: 0.9em;
+    margin: 0 0 2px;
+    color: var(--ink);
+  }
+  :global(.gallery-item .meta p) {
+    font-size: 0.78em;
+    color: var(--muted);
+    margin: 0;
+  }
+  :global(.gallery-group-heading) {
+    grid-column: 1 / -1;
+    font-family: var(--sans);
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 4px;
+    margin: 1.4em 0 0.2em;
+  }
+  :global(.gallery-group-heading:first-child) {
+    margin-top: 0;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(20, 17, 12, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    cursor: zoom-out;
+  }
+  .lightbox[hidden] { display: none; }
+  .lightbox-inner {
+    position: relative;
+    max-width: min(90vw, 900px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    cursor: default;
+  }
+  .lightbox-inner img {
+    max-width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 6px;
+    display: block;
+    margin: 0 auto;
+  }
+  .lightbox-caption {
+    font-family: var(--sans);
+    color: var(--paper);
+    text-align: center;
+    padding-top: 14px;
+  }
+  .lightbox-caption h3 {
+    font-family: var(--sans);
+    font-size: 1em;
+    margin: 0 0 4px;
+  }
+  .lightbox-caption p {
+    font-size: 0.85em;
+    color: #cfc7b6;
+    margin: 0;
+  }
+  .lightbox-caption a {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: var(--paper);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--paper);
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+</style>
+
+<script>
+  const grid = document.getElementById('gallery-grid');
+  const lightbox = document.getElementById('lightbox') as HTMLDivElement | null;
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxMeta = document.getElementById('lightbox-meta');
+  const lightboxLink = document.getElementById('lightbox-link') as HTMLAnchorElement | null;
+  const lightboxClose = document.querySelector('.lightbox-close');
+
+  function openLightbox(data: { image: string; title: string; locationName: string; dateLabel: string; href?: string }) {
+    if (!lightbox || !lightboxImg || !lightboxTitle || !lightboxMeta || !lightboxLink) return;
+    lightboxImg.src = data.image;
+    lightboxImg.alt = data.title;
+    lightboxTitle.textContent = data.title;
+    lightboxMeta.textContent = `${data.locationName} · ${data.dateLabel}`;
+    if (data.href) {
+      lightboxLink.href = data.href;
+      lightboxLink.style.display = 'inline-block';
+    } else {
+      lightboxLink.style.display = 'none';
+    }
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  // Click outside the image/caption (i.e. on the dark backdrop) closes it
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  lightboxClose?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  if (grid) {
+    const photos = JSON.parse(grid.dataset.photos || '[]');
+    const sortButtons = document.querySelectorAll('[data-sort]');
+    const viewButtons = document.querySelectorAll('[data-view]');
+
+    let currentSort: 'date' | 'location' = 'date';
+    let currentView: 'grid' | 'single' = 'single';
+
+    function render() {
+      const sorted = [...photos];
+      if (currentSort === 'date') {
+        sorted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      } else {
+        sorted.sort((a: any, b: any) => a.locationName.localeCompare(b.locationName));
+      }
+
+      if (grid) {
+        grid.classList.remove('view-grid', 'view-single');
+        grid.classList.add(currentView === 'grid' ? 'view-grid' : 'view-single');
+      }
+
+      let html = '';
+      let lastGroup = '';
+      sorted.forEach((p: any, i: number) => {
+      console.log(p.display);
+        if (p.display !== false) {
+
+        const group = currentSort === 'date'
+          ? new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+          : p.locationName;
+
+        if (group !== lastGroup) {
+          html += `<div class="gallery-group-heading">${group}</div>`;
+          lastGroup = group;
+        }
+
+        const dateLabel = new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+        html += `
+          <button type="button" class="gallery-item" data-index="${i}">
+            <img src="${p.image}" alt="${p.caption}" loading="lazy" />
+            <div class="meta">
+              <h3>${p.caption}</h3>
+              <p>${p.locationName} · ${dateLabel}</p>
+            </div>
+          </button>
+        `;
+      }});
+      if (grid) grid.innerHTML = html;
+
+      grid?.querySelectorAll('.gallery-item').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = Number((btn as HTMLElement).dataset.index);
+          const p = sorted[idx];
+          const dateLabel = new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          openLightbox({
+            image: p.image,
+            title: p.title,
+            locationName: p.locationName,
+            dateLabel,
+            href: p.href,
+          });
+        });
+      });
+    }
+
+    sortButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sortButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSort = (btn as HTMLElement).dataset.sort as 'date' | 'location';
+        render();
+      });
+    });
+
+    viewButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        viewButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = (btn as HTMLElement).dataset.view as 'single' | 'grid';
+        render();
+      });
+    });
+
+    render();
+  }
+</script>

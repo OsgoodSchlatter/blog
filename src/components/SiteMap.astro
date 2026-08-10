@@ -1,0 +1,229 @@
+---
+export interface MapPin {
+  id: string;
+  lat: number;
+  lng: number;
+  title: string;
+  note?: string;
+  image?: string;      // if present, renders a photo card popup
+  date?: string;
+  href?: string;
+  category: 'photo' | 'travel' | 'favorite' | 'sport';
+  sport?: string;       // only for category === 'sport', e.g. "ski", "surf"
+}
+
+interface Props {
+  pins: MapPin[];
+}
+const { pins } = Astro.props;
+---
+<div class="map-wrap">
+  <div id="map" data-pins={JSON.stringify(pins)}></div>
+  <div id="legend" class="legend"></div>
+</div>
+
+<style>
+  .map-wrap {
+    position: relative;
+  }
+  #map {
+    width: 100%;
+    height: 70vh;
+    min-height: 420px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+  }
+  .legend {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 500;
+    background: var(--paper-raised, #fff);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: var(--sans, sans-serif);
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    max-width: 200px;
+  }
+  :global(.legend-row) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    cursor: pointer;
+    user-select: none;
+    color: var(--ink, #232019);
+  }
+  :global(.legend-row input) {
+    margin: 0;
+  }
+  :global(.legend-dot) {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+  :global(.pin-popup) {
+    font-family: var(--sans, sans-serif);
+    max-width: 220px;
+  }
+  :global(.pin-popup img) {
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  :global(.pin-popup h3) {
+    margin: 0 0 4px;
+    font-size: 14px;
+  }
+  :global(.pin-popup p) {
+    margin: 0;
+    font-size: 12px;
+    color: #756e60;
+  }
+  :global(.pin-popup .cat-label) {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #756e60;
+    margin-bottom: 4px;
+  }
+  :global(.pin-popup a) {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 12px;
+  }
+</style>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  type Category = 'photo' | 'travel' | 'favorite' | 'sport';
+
+  const CATEGORY_META: Record<string, { label: string; color: string }> = {
+  places: { label: 'Places', color: '#3b6e5a' },
+  favorite: { label: 'Places I like', color: '#a8461f' },
+  sport_ski:  { label: 'Ski',  color: '#2a8fbd' },
+  sport_surf: { label: 'Surf', color: '#0fa3a3' },
+  sport_other: { label: 'Other sports', color: '#8a5fd6' },
+};
+
+  const SPORT_GLYPH: Record<string, string> = {
+    ski: '⛷',
+    surf: '🏄',
+  };
+
+  function categoryKey(pin: any): string {
+  if (pin.category === 'sport') {
+    const sport = (pin.sport || '').toLowerCase();
+    if (sport === 'ski' || sport === 'surf') return `sport_${sport}`;
+    return 'sport_other';
+  }
+  if (pin.category === 'photo' || pin.category === 'travel') {
+    return 'places';
+  }
+  return pin.category;
+}
+
+  function makeIcon(color: string, glyph?: string) {
+    return L.divIcon({
+      className: 'custom-pin',
+      html: `<div style="
+        width: 18px; height: 18px; border-radius: 50%;
+        background: ${color}; border: 2px solid white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 10px; line-height: 1;
+      ">${glyph || ''}</div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+      popupAnchor: [0, -9],
+    });
+  }
+
+  const el = document.getElementById('map');
+  const legendEl = document.getElementById('legend');
+  if (el) {
+    const pins = JSON.parse(el.dataset.pins || '[]');
+    console.log(pins)
+
+    const map = L.map(el);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Group pins into per-category Leaflet layer groups
+    const layers: Record<string, L.LayerGroup> = {};
+    const presentCategories = new Set<string>();
+
+    for (const p of pins) {
+      const key = categoryKey(p);
+      presentCategories.add(key);
+      if (!layers[key]) layers[key] = L.layerGroup();
+
+      const meta = CATEGORY_META[key] || { label: key, color: '#666' };
+      const glyph = p.category === 'sport' ? (SPORT_GLYPH[(p.sport || '').toLowerCase()] || '') : '';
+      const icon = makeIcon(meta.color, glyph);
+
+      const popupHtml = `
+        <div class="pin-popup">
+          <span class="cat-label">${meta.label}</span>
+          ${p.image ? `<img src="${p.image}" alt="" />` : ''}
+          <h3>${p.title}</h3>
+          ${p.note ? `<p>${p.note}</p>` : ''}
+          ${p.href ? `<a href="${p.href}">Read more →</a>` : ''}
+        </div>
+      `;
+      L.marker([p.lat, p.lng], { icon }).bindPopup(popupHtml).addTo(layers[key]);
+    }
+
+    // Add all layers to the map by default
+    for (const key of Object.keys(layers)) {
+      layers[key].addTo(map);
+    }
+
+    if (pins.length > 0) {
+      const bounds = L.latLngBounds(pins.map((p: any) => [p.lat, p.lng]));
+      map.fitBounds(bounds, { padding: [40, 40] });
+    } else {
+      map.setView([20, 0], 2);
+    }
+
+    // Build the legend / toggle UI, ordered sensibly
+const order = ['places', 'favorite', 'sport_ski', 'sport_surf', 'sport_other'];
+    if (legendEl) {
+      let html = '';
+      for (const key of order) {
+        if (!presentCategories.has(key)) continue;
+        const meta = CATEGORY_META[key];
+        html += `
+          <label class="legend-row">
+            <input type="checkbox" checked data-layer="${key}" />
+            <span class="legend-dot" style="background:${meta.color}"></span>
+            ${meta.label}
+          </label>
+        `;
+      }
+      legendEl.innerHTML = html;
+
+      legendEl.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+        input.addEventListener('change', (e) => {
+          const target = e.target as HTMLInputElement;
+          const key = target.dataset.layer as string;
+          if (!layers[key]) return;
+          if (target.checked) {
+            layers[key].addTo(map);
+          } else {
+            map.removeLayer(layers[key]);
+          }
+        });
+      });
+    }
+  }
+</script>

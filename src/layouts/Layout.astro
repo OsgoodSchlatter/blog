@@ -1,0 +1,282 @@
+---
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "A field notebook of writing, maps, and photos." } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div class="site">
+      <header class="site-header">
+        <a class="brand" href="/">Osgood's diary</a>
+        <nav>
+          <a href="/">Articles</a>
+          <a href="/gallery">Gallery</a>
+          <a href="/map">Map</a>
+          <!-- <div class="dropdown">
+              <button class="dropdown-btn">
+                More
+              </button>
+            <div class="dropdown-content">
+              <a href="/chords">Chord Progressions</a>
+              <a href="/scales">Scales</a>
+              <a href="/ear-training">Ear Training</a>
+              <a href="/tools">Tools</a>
+              <a href="/about">About</a>
+            </div>
+          </div> -->
+        </nav>
+        
+      </header>
+      <main>
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <span>© 2026. Made with love by Osgood and LLMs. Built with Astro.</span>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --ink: #232019;
+    --paper: #faf7f0;
+    --paper-raised: #ffffff;
+    --line: #ded6c4;
+    --accent: #3b6e5a;
+    --accent-2: #a8461f;
+    --muted: #756e60;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  body {
+    font-family: var(--serif);
+    line-height: 1.6;
+    font-size: 18px;
+  }
+
+
+  .site {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 10px;
+    padding: 40px 0 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+    font-family: var(--sans);
+  }
+
+  .brand {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .site-header nav {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 20px;
+    row-gap: 6px;
+  }
+  .site-header nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+
+  .dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  all: unset;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.dropdown-btn:hover {
+  color: var(--accent-2);
+}
+
+.dropdown-content {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+
+  min-width: 220px;
+
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+
+  display: none;
+  flex-direction: column;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  padding: 10px 16px;
+  text-decoration: none;
+  color: var(--ink);
+  text-transform: none;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background: #f4efe3;
+  color: var(--accent-2);
+}
+
+.dropdown:hover .dropdown-content {
+  display: flex;
+}
+
+  .site-header nav a:hover { color: var(--accent-2); }
+
+  @media (max-width: 480px) {
+    .site {
+      padding: 0 16px 60px;
+    }
+    .site-header {
+      padding: 24px 0 16px;
+      margin-bottom: 28px;
+    }
+    .brand {
+      font-size: 19px;
+    }
+    .site-header nav {
+      column-gap: 14px;
+      width: 100%;
+    }
+    .site-header nav a {
+      font-size: 13px;
+    }
+  }
+
+  main { flex: 1; }
+
+  h1, h2, h3 { font-family: var(--serif); line-height: 1.25; }
+  h1 { font-size: 2.1em; margin-bottom: 0.2em; }
+  h2 { font-size: 1.5em; margin-top: 1.6em; }
+  h3 { font-size: 1.2em; margin-top: 1.4em; }
+
+  a { color: var(--accent-2); }
+
+  p { margin: 1em 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.6em 0;
+    font-family: var(--sans);
+    font-size: 0.92em;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background: #f1ece0;
+    font-weight: 600;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 4px;
+    display: block;
+  }
+
+  figure { margin: 1.8em 0; }
+  figcaption {
+    font-family: var(--sans);
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-top: 0.5em;
+    text-align: center;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 1.5em 0;
+    padding: 0.2em 1.2em;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  code {
+    font-family: var(--mono);
+    background: #f1ece0;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+  pre {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+
+  .site-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .katex-display { overflow-x: auto; overflow-y: hidden; }
+</style>

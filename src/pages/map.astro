@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteMap from '../components/SiteMap.astro';
+import { getCollection } from 'astro:content';
+
+const photos = await getCollection('photos');
+const locations = await getCollection('locations');
+
+const photoPins = photos.map((p) => ({
+  id: `photo-${p.id}`,
+  lat: p.data.location.lat,
+  lng: p.data.location.lng,
+  title: p.data.title ?? p.data.location.name,
+  note: p.data.caption,
+  image: p.data.image,
+  date: p.data.date.toISOString(),
+  href: p.data.article ? `/articles/${p.data.article}/` : undefined,
+  category: 'photo' as const,
+}));
+
+const locationPins = locations.map((l) => ({
+  id: `location-${l.id}`,
+  lat: l.data.lat,
+  lng: l.data.lng,
+  title: l.data.name,
+  note: l.data.note,
+  category: l.data.list,
+  sport: l.data.sport,
+  image: l.data.image,
+}));
+
+const pins = [...photoPins, ...locationPins];
+---
+<Layout title="Map — Osgood's diary">
+  <SiteMap pins={pins} />
+</Layout>
+
+<style>
+  .intro {
+    font-family: var(--sans);
+    color: var(--muted);
+    margin-top: -0.5em;
+  }
+</style>
