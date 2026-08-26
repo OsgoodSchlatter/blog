@@ -1,0 +1,208 @@
+---
+title: "Maths"
+description: "A reminder to myself of some useful mathematical tools."
+date: 2024-01-01
+tags: ["maths", "mathematics", "engineering"]
+category: "knowledge"
+draft: false
+---
+
+A reminder to myself of some useful mathematical tools.
+
+## Fourier Transform
+
+The Fourier transform allows us to move between the **temporal domain** and the **frequency domain**:
+
+$$
+F(\omega) = \int_{-\infty}^{\infty} f(t)e^{-i\omega t}\,dt
+$$
+
+The problem is that the Fourier transform is only defined for functions that are sufficiently integrable over $[-\infty,\infty]$.
+
+For example, consider:
+
+$$
+x(t)=e^t
+$$
+
+Its Fourier transform would involve:
+
+$$
+\int_{-\infty}^{\infty} e^t e^{-i\omega t}\,dt
+=
+\int_{-\infty}^{\infty} e^{(-i\omega+1)t}\,dt
+$$
+
+However, this integral does not converge because:
+
+$$
+\operatorname{Re}(1-i\omega)=1>0
+$$
+
+## Laplace Transform
+
+The Laplace transform generalizes the Fourier transform by introducing a complex variable $s$:
+
+$$
+F(s) = \int_{-\infty}^{\infty} f(t)e^{-st}\,dt
+$$
+
+with:
+
+$$
+s=\sigma+i\omega
+$$
+
+This allows us to integrate a broader class of functions, including functions bounded by exponentials:
+
+$$
+|f(t)| \leq Ae^{\alpha t},
+\qquad
+(A,\alpha)\in\mathbb{R}
+$$
+
+provided that:
+
+$$
+\alpha < \sigma
+$$
+
+## Convolution
+
+The convolution of two functions $f$ and $g$ is defined as:
+
+$$
+(f*g)(t)
+=
+\int_{-\infty}^{\infty}
+f(\tau)g(t-\tau)\,d\tau
+$$
+
+An important property of the Laplace transform is that convolution in the time domain becomes multiplication in the Laplace domain:
+
+$$
+L(f*g)(s)=F(s)G(s)
+$$
+
+## Vector Calculus
+
+### Nabla operator
+
+The nabla operator is defined as:
+
+$$
+\vec{\nabla}
+=
+\begin{pmatrix}
+\frac{\partial}{\partial x}\\
+\frac{\partial}{\partial y}\\
+\frac{\partial}{\partial z}
+\end{pmatrix}
+$$
+
+### Divergence
+
+The divergence applies the nabla operator to a vector field:
+
+$$
+\vec{\nabla}\cdot\vec{F}
+=
+\begin{pmatrix}
+\frac{\partial}{\partial x}\\
+\frac{\partial}{\partial y}\\
+\frac{\partial}{\partial z}
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+F_x\\
+F_y\\
+F_z
+\end{pmatrix}
+$$
+
+which gives:
+
+$$
+\vec{\nabla}\cdot\vec{F}
+=
+\frac{\partial F_x}{\partial x}
++
+\frac{\partial F_y}{\partial y}
++
+\frac{\partial F_z}{\partial z}
+$$
+
+The divergence therefore maps a **vector field to a scalar field**:
+
+$$
+E \rightarrow C
+$$
+
+### Gradient
+
+The nabla operator can also be applied to a scalar field $f$:
+
+$$
+\vec{\nabla}f
+=
+\begin{pmatrix}
+\frac{\partial}{\partial x}\\
+\frac{\partial}{\partial y}\\
+\frac{\partial}{\partial z}
+\end{pmatrix}
+f
+$$
+
+giving:
+
+$$
+\vec{\nabla}f
+=
+\begin{pmatrix}
+\frac{\partial f}{\partial x}\\
+\frac{\partial f}{\partial y}\\
+\frac{\partial f}{\partial z}
+\end{pmatrix}
+$$
+
+The gradient therefore maps a **scalar field to a vector field**:
+
+$$
+C \rightarrow E
+$$
+
+### Curl
+
+The curl of a vector field $\vec{F}$ is:
+
+$$
+\vec{\nabla}\times\vec{F}
+=
+\begin{pmatrix}
+\frac{\partial F_z}{\partial y}
+-
+\frac{\partial F_y}{\partial z}
+\\
+\frac{\partial F_x}{\partial z}
+-
+\frac{\partial F_z}{\partial x}
+\\
+\frac{\partial F_y}{\partial x}
+-
+\frac{\partial F_x}{\partial y}
+\end{pmatrix}
+$$
+
+The curl describes the local rotational behavior of a vector field.
+
+## Green–Ostrogradsky Theorem
+
+The Green–Ostrogradsky theorem, also known as the divergence theorem, relates the divergence of a vector field over a volume to its flux through the boundary surface:
+
+$$
+\int_V \vec{\nabla}\cdot\vec{F}\,dV
+=
+\int_S \vec{F}\cdot\vec{n}\,dS
+$$
+
+where $\vec{n}$ is the outward-pointing normal vector to the surface $S$.

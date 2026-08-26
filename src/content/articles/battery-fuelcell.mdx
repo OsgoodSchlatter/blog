@@ -1,0 +1,148 @@
+---
+title: "Battery and Fuel Cell Technologies"
+description: "Overview of battery technologies, hydrogen production and fuel cells."
+date: 2023-01-01
+tags: ["batteries", "hydrogen", "fuel cells", "energy"]
+category: "knowledge"
+draft: false
+---
+
+Most of the content on this page comes from the course of Didier Dalmazzonne,
+although I may have added other information on top.
+
+## Battery Overview
+
+The first battery was created by Volta in 1782.
+
+### Lead-Acid Battery
+
+Invented by Gaston Planté in 1859, the lead-acid battery represents around
+80% of installed battery capacity.
+
+<figure>
+  <img src="/images/physics/leadacid.png" alt="Lead-acid battery" />
+</figure>
+
+The overall reaction is:
+
+$$
+Pb(s) + PbO_2(s) + 2H_2SO_4(aq)
+\rightarrow
+2PbSO_4(s) + 2H_2O
+$$
+
+### Comparison of Battery Technologies
+
+| Battery type | Number of cycles (100% discharge) | Cost (€/kWh) |
+|---|---:|---:|
+| Li-ion | 4000 | 500 |
+| Lead-acid | 800 | 100 |
+| NaS | 4500 | 450 |
+| Zebra | 4500 | 450 |
+| Vanadium | 20 years | 450 |
+| Zn/Be | 4500 | 650 |
+
+### Lithium-Ion Technologies
+
+| Battery type | Cathode | Anode | Cell voltage | Cost | Energy density | Cycle life | Discharge rate |
+|---|---|---|---:|---|---:|---|---|
+| LCO | Li Co Oxide | Graphite | 3.6 V | Medium | 500 Wh/L | Short | Up to 3C |
+| LFP | Li Fe Phosphate | Graphite | 3.2 V | Low | 180 Wh/L | Medium | Up to 25C |
+| Li-NCA | Li Ni Co Alumine | Graphite | 3.6 V | Low | 500 Wh/L | Short | Up to 3C |
+| Li-NMC | Li Ni Mn Co | Graphite | 3.7 V | Medium | 500 Wh/L | Medium | Up to 3C |
+| LTO | Ni Co Alumine | Li Ti Oxide | 2.4 V | High | 120 Wh/L | Long | Up to 10C |
+
+## Hydrogen Overview
+
+### Hydrogen Today
+
+#### Data
+
+- **World production:** 75 Mt
+- **Energy equivalent of H₂ production:** 0.2 Gtoe/year
+- **Oil production:** 4.4 Gt/year
+- **World primary energy consumption:** 14.5 Gtoe/year
+- **Hydrogen produced by fossil-fuel reforming:** 95%
+- **Fossil-fuel reforming and gasification:** 1 GtCO₂/year
+- **Human CO₂ emissions:** 35–40 GtCO₂/year
+
+### Main Current Uses of H₂
+
+- **Oil refining:** 44%
+- **Ammonia for fertilizers:** 38%
+- **Food industry:** 9%
+- **Methanol and chemicals:** 8%
+- **Space propulsion:** 1%
+
+### Pros and Cons
+
+#### Pros
+
+- Raw material abundant and 100% regenerated
+- High energy density per unit of mass
+- Variety of sources, production methods and uses
+- No direct greenhouse effect, but hydrogen interacts with other molecules
+  which can contribute to an increase in the greenhouse effect
+
+#### Cons
+
+- Cost
+- Low density per unit of volume (40 kg/m³ compared with approximately
+  800 kg/m³ for oil)
+- Difficult to store
+- Lack of dedicated infrastructure and distribution networks
+- Risk acceptance
+
+## Converting Hydrogen to Energy
+
+There are two main ways of converting hydrogen into energy:
+
+- **Direct combustion**
+- **Fuel cells**
+
+### Main Hydrogen Fuel Cell Technologies
+
+| Type | Electrolyte | Temperature (°C) | Fuel | Efficiency | Power | Maturity |
+|---|---|---:|---|---:|---|---|
+| Alkaline | KOH | 50–200 | Industrial H₂ | 65% | 10–100 kW | Mature |
+| Phosphoric Acid | H₃PO₄ | 180–220 | H₂ | 35–40% | 10 MW | Commercial |
+| Proton Exchange Membrane | Solid polymer | 30–100 | H₂ | 35–40% | 100 W–500 kW | Commercial |
+| Molten Carbonate | Li₂CO₃, K₂CO₃, Na₂CO₃ | 600–700 | H₂ | 50–60% | 100 MW | Development |
+| Solid Oxide | ZrO₂, Y₂O₃ | 800–1050 | H₂, CO₂, CH₄ | 50–65% | 100 MW | Development |
+
+## Proton Exchange Membrane
+
+A **proton exchange membrane (PEM)** is a semipermeable membrane designed
+to allow protons to pass through while blocking reactants such as H₂ and O₂.
+
+It can be used in a fuel cell according to the following reaction:
+
+$$
+2H_2 + O_2 \rightarrow 2H_2O + \text{heat} + \text{electrical energy}
+$$
+
+<figure>
+  <img src="/images/physics/pem.png" alt="Proton exchange membrane fuel cell" />
+  <figcaption>Source: Wikipédia</figcaption>
+</figure>
+
+## Perspectives for Hydrogen
+
+Hydrogen production would need to be multiplied by approximately **12** to
+meet 20% of today's energy requirements.
+
+### Hydrogen Production Costs
+
+According to DOE data from 2013:
+
+- **Large-scale SMR:** 1.5 $/kg
+- **Small-scale SMR:** 3–6 $/kg
+- **Electrolysis:** 6–15 $/kg
+- **Carriage costs:** 1.25 $/kg
+- **Global hydrogen costs:** 22–135 $/GJ
+- **Global oil costs:** 7 $/GJ
+
+## Conclusion
+
+> Hydrogen is regarded as a solution for long-term storage of energy
+> produced from low-carbon sources.

@@ -1,0 +1,596 @@
+---
+title: "Neutron Physics"
+description: "Notes and summaries on neutron physics, reactor physics, diffusion theory, and fuel evolution."
+date: 2024-03-04
+tags: ["nuclear", "neutronics", "physics", "reactors"]
+category: "knowledge"
+draft: false
+cover: "/images/physics/PWR.png"
+---
+
+Notes on neutron physics and reactor physics.
+
+## Chapters
+
+1. General facts about nuclear energy
+2. Basis of neutron physics
+3. Diffusion equation
+4. One-group/diffusion theory
+5. Neutron slowing down
+6. Resonant absorption of neutrons
+7. Thermalisation of neutrons
+8. Multigroup theory
+9. Poisoning by fission products
+10. — 
+11. —
+12. Fuel evolution
+13. Temperature effect
+14. Boltzmann equation
+
+---
+
+# 1. General facts about nuclear energy
+
+## 1.1 — History of Fermi's pile
+
+In 1942, Fermi and his team achieved the first controlled chain fission reaction. The neutron population increased even after the initial source was removed, showing that a self-sustaining chain reaction was occurring in the pile.
+
+After the chain reaction generated a power of approximately 0.5 W, Fermi introduced cadmium control rods to control the reaction.
+
+## 1.2 — Principle of a nuclear power plant
+
+What mainly distinguishes a nuclear power plant from conventional plants such as coal or gas plants is the **heat source**.
+
+A nuclear power plant contains a heat source that heats a working fluid to a high temperature. The fluid expands through a turbine, converting thermal energy into mechanical energy.
+
+The turbine is connected to a generator, where mechanical energy is converted into electricity through electromagnetic induction.
+
+After passing through the turbine, the working fluid loses energy, cools down, and is cycled back toward the heat source.
+
+The efficiency of heat-to-mechanical-energy conversion cannot exceed the **Carnot efficiency**:
+
+$$
+\eta = 1 - \frac{T_{\text{cold}}}{T_{\text{hot}}}
+$$
+
+where $T_{\text{cold}}$ is the temperature of the cold source and $T_{\text{hot}}$ is the temperature of the hot source.
+
+In a nuclear reactor, the heat source is not a combustion reaction between a fuel and oxygen. Instead, heat is produced by a controlled chain reaction involving nuclear fission.
+
+## 1.3 — Overview of a PWR nuclear power plant
+
+There are different reactor types, each with its own advantages and drawbacks. In France, nuclear power plants are predominantly **Pressurized Water Reactors (PWRs)**.
+
+In a PWR, water is heated to approximately $280$–$320^\circ\text{C}$ while remaining liquid because of the high pressure, around $155$ bar.
+
+<figure>
+  <img src="/images/physics/PWR.png" alt="Diagram of a pressurized water reactor" />
+  <figcaption>Diagram of a PWR.</figcaption>
+</figure>
+
+The region where fission takes place is the **core**. Water flows through the core inside the reactor vessel, which is designed to withstand the high pressure.
+
+The primary circuit is a closed loop. The pressure is maintained by a **pressurizer**, allowing the water to remain liquid despite its high temperature.
+
+A PWR generally has three or four primary loops. Each loop contains a steam generator and a pump, while the pressurizer is connected to one of the loops.
+
+### Steam generators
+
+Steam generators transfer heat from the primary circuit to the secondary circuit.
+
+The primary and secondary water do not mix. Instead, heat is transferred through the steam-generator tubes.
+
+The secondary-circuit water is heated until it becomes steam. Moisture separators remove water droplets before the steam is sent toward the turbines.
+
+The steam drives the turbines, which are connected to the electrical generator.
+
+After leaving the turbine, the steam is condensed and cooled in the condenser. A third circuit provides the cooling required to transform the steam back into liquid water.
+
+The water is then sent back to the steam generator, completing the cycle.
+
+## 1.4 — Fission and forces at stake in a nucleus
+
+The stability of a nucleus results from a balance between **Coulomb repulsion** and the **strong nuclear interaction**.
+
+The Coulomb interaction acts between charged particles and therefore acts primarily between protons inside the nucleus. It is a long-range interaction whose strength decreases approximately with the inverse square of the distance.
+
+Because protons repel one another, the Coulomb interaction alone could not confine them inside such a small volume.
+
+The strong nuclear interaction provides the attractive force necessary to bind nucleons together. It acts on both protons and neutrons and has a very short range, of approximately $1\text{ fm}$.
+
+<figure>
+  <img src="/images/physics/coulomb_vs_strong_interaction.png" alt="Comparison between Coulomb and strong nuclear interactions" />
+  <figcaption>Coulomb and strong interactions in the nucleus.</figcaption>
+</figure>
+
+The balance between the number of protons and neutrons determines nuclear stability.
+
+For light nuclei, the neutron-to-proton ratio is approximately $1$. For heavier nuclei, it gradually increases toward approximately $1.5$.
+
+<figure>
+  <img src="/images/physics/valley_of_stability.png" alt="Valley of nuclear stability" />
+  <figcaption>Valley of stability.</figcaption>
+</figure>
+
+Because Coulomb repulsion increases with the number of protons, heavy nuclei are generally less strongly bound than smaller nuclei.
+
+When a heavy nucleus undergoes fission, it splits into two smaller fragments and releases energy.
+
+Typical nuclear fission releases around:
+
+$$
+E_{\text{fission}} \approx 200\text{ MeV}
+$$
+
+while chemical reactions typically involve energies of only a few eV.
+
+## 1.5 — Chain reactions
+
+A chain reaction is a process in which one reaction produces the conditions necessary for subsequent reactions.
+
+A familiar example is combustion. A fire requires an initial energy input, after which the heat produced by combustion can trigger further combustion.
+
+Nuclear fission works similarly. A neutron induces fission, releasing energy and additional neutrons. These neutrons can then induce further fissions.
+
+The process can therefore continue as long as enough fissile material is available.
+
+To control the chain reaction, we introduce the multiplication factor $K$.
+
+Let $\omega$ be the probability that a neutron causes fission, and $\nu$ the average number of neutrons emitted per fission:
+
+$$
+K = \omega \nu
+$$
+
+If there are $N$ fissions at $t=0$, the successive generations are approximately:
+
+$$
+N \rightarrow NK \rightarrow NK^2 \rightarrow NK^3 \rightarrow \cdots
+$$
+
+### Criticality
+
+If
+
+$$
+K = 1
+$$
+
+the number of fissions remains constant from one generation to the next. The reactor is **critical**.
+
+If
+
+$$
+K > 1
+$$
+
+the number of fissions increases. The reactor is **supercritical**.
+
+If
+
+$$
+K < 1
+$$
+
+the number of fissions decreases. The reactor is **subcritical**.
+
+## 1.6 — Types of reactors
+
+For $^{235}\text{U}$, the average number of neutrons produced per fission is approximately:
+
+$$
+\nu \approx 2.4
+$$
+
+Therefore, to obtain $K=1$, the probability of producing a subsequent fission needs to be roughly:
+
+$$
+\omega \approx \frac{1}{2.4} \approx 42\%
+$$
+
+Some important facts:
+
+1. Uranium is the only naturally occurring element capable of sustaining a fission chain reaction.
+2. Natural uranium contains mainly $^{235}\text{U}$ and $^{238}\text{U}$.
+3. $^{238}\text{U}$ generally requires a sufficiently energetic neutron to undergo fission, whereas $^{235}\text{U}$ is fissile and can undergo fission with neutrons over a broad energy range.
+4. Natural uranium contains approximately $0.72\%$ $^{235}\text{U}$.
+5. Fission neutrons are emitted with energies of roughly $2\text{ MeV}$.
+6. The fission cross section of $^{235}\text{U}$ is much higher than that of $^{238}\text{U}$ at thermal neutron energies.
+
+This leads to two broad reactor concepts:
+
+### Fast reactors
+
+Fast reactors use fast neutrons without significantly slowing them down.
+
+They generally require enriched uranium or other fissile material.
+
+### Thermal reactors
+
+Thermal reactors slow neutrons down using a **moderator**.
+
+The lower neutron energy greatly increases the fission probability of $^{235}\text{U}$, allowing reactors to operate with much lower enrichment.
+
+## 1.7 — Choice of moderator
+
+For reactors using natural or low-enriched uranium, a moderator is required to slow neutrons down to thermal energies.
+
+An effective moderator should:
+
+- Have a mass relatively close to that of a neutron.
+- Scatter neutrons efficiently.
+- Have a low neutron absorption probability.
+- Be sufficiently dense to slow neutrons efficiently.
+
+Common moderators include:
+
+1. Light water
+2. Heavy water
+3. Beryllium
+4. Carbon, usually in the form of graphite
+
+Light water has a relatively high neutron absorption cross section compared with the other moderators. Therefore, reactors using light water generally require enriched uranium.
+
+The advantage is that water is inexpensive and can simultaneously act as both **moderator and coolant**.
+
+This is the principle used in PWR and BWR reactors, which represent a large fraction of operating reactors.
+
+---
+
+# 2. Basis of neutron physics
+
+## 2.1 — Neutron-matter interaction
+
+Neutrons are electrically neutral, so they do not interact directly with the electron cloud through the Coulomb interaction. Their interactions with matter therefore primarily involve atomic nuclei.
+
+The probability of a particular interaction is described using a **cross section** $\sigma$.
+
+<figure>
+  <img src="/images/physics/schematic_neutron_reactions.png" alt="Schematic of neutron interactions with matter" />
+  <figcaption>Neutron interactions with matter.</figcaption>
+</figure>
+
+Neutron interactions can broadly be divided into **scattering** and **absorption**.
+
+### Scattering
+
+#### Elastic scattering
+
+In elastic scattering, the total kinetic energy of the neutron-nucleus system is conserved.
+
+The neutron transfers part of its energy to the nucleus:
+
+$$
+n + A \rightarrow n + A
+$$
+
+#### Inelastic scattering
+
+In inelastic scattering, the neutron excites the nucleus and loses kinetic energy.
+
+$$
+n + A \rightarrow n + A^*
+$$
+
+The excited nucleus subsequently de-excites:
+
+$$
+A^* \rightarrow A + \gamma
+$$
+
+This process is only possible when the incident neutron has enough energy to reach an excited nuclear state.
+
+### Absorption
+
+During absorption, the neutron is captured by the nucleus, creating a new compound nucleus.
+
+Several subsequent reactions are possible.
+
+#### Fission
+
+For a fissionable nucleus:
+
+$$
+n + A \rightarrow FF_1 + FF_2 + \nu n
+$$
+
+where $FF$ denotes a fission fragment.
+
+For some nuclei, fission has no effective threshold, while others require the incident neutron to provide sufficient energy.
+
+#### Radiative capture
+
+The neutron is absorbed and the resulting nucleus de-excites through gamma emission:
+
+$$
+n + A \rightarrow \gamma + (A+1)
+$$
+
+This is commonly referred to as an $(n,\gamma)$ reaction.
+
+#### Multiple neutron emission
+
+$$
+n + A \rightarrow kn + (A-k)
+$$
+
+This reaction has a threshold corresponding to the energy required to remove $k$ neutrons from the nucleus.
+
+#### Other reactions
+
+Examples include:
+
+$$
+n + A \rightarrow p + B
+$$
+
+and
+
+$$
+n + A \rightarrow \alpha + C
+$$
+
+## 2.2 — Cross sections
+
+The **cross section** measures the probability of an interaction between a neutron and a nucleus.
+
+The microscopic cross section is:
+
+$$
+\sigma \quad [\text{cm}^2]
+$$
+
+The macroscopic cross section is:
+
+$$
+\Sigma = N\sigma
+$$
+
+with:
+
+- $N$: atomic density, in $\text{cm}^{-3}$
+- $\sigma$: microscopic cross section, in $\text{cm}^2$
+- $\Sigma$: macroscopic cross section, in $\text{cm}^{-1}$
+
+There is a different cross section for each possible type of interaction.
+
+## 2.3 — Four-factor formula
+
+$K$ describes the number of neutrons from one generation that produce fissions in the next generation.
+
+For an infinite reactor, where neutron leakage is neglected, we introduce:
+
+$$
+K_\infty
+$$
+
+For a PWR, thermal neutrons are particularly important because they have a high probability of inducing fission in $^{235}\text{U}$.
+
+Starting with one thermal neutron, several factors must be considered.
+
+### Fast fission factor
+
+Some additional fissions are caused by fast neutrons. This is represented by $\epsilon$:
+
+$$
+1\text{ thermal neutron}
+\rightarrow
+\epsilon\text{ neutrons}
+$$
+
+For a typical PWR:
+
+$$
+\epsilon \approx 1.07
+$$
+
+### Resonance escape probability
+
+The probability that neutrons slow down through the epithermal region without being absorbed is represented by $p$:
+
+$$
+1\text{ thermal neutron}
+\rightarrow
+\epsilon p\text{ neutrons}
+$$
+
+For a typical PWR:
+
+$$
+p \approx 0.75
+$$
+
+### Thermal utilization factor
+
+Once thermalized, a neutron has a probability $f$ of being absorbed in the fuel rather than in structural materials or other components:
+
+$$
+1\text{ thermal neutron}
+\rightarrow
+\epsilon p f\text{ neutrons}
+$$
+
+For a typical PWR:
+
+$$
+f \approx 0.9
+$$
+
+### Reproduction factor
+
+Not every neutron absorbed by the fuel causes fission.
+
+The probability that an absorption results in fission is:
+
+$$
+\frac{\Sigma_f}{\Sigma_a}
+$$
+
+Each fission produces, on average, $\nu$ neutrons.
+
+Therefore:
+
+$$
+1
+\rightarrow
+\epsilon p f
+\frac{\Sigma_f}{\Sigma_a}
+\nu
+$$
+
+Defining:
+
+$$
+\eta =
+\frac{\Sigma_f}{\Sigma_a}\nu
+$$
+
+we obtain the **four-factor formula**:
+
+$$
+\boxed{
+K_\infty = \epsilon p f \eta
+}
+$$
+
+## 2.4 — Transport equation
+
+The transport equation describes the evolution of neutron density.
+
+Consider a volume $D$ containing neutrons with velocity $v$.
+
+The time variation of the neutron population can be written as:
+
+$$
+\frac{\partial n}{\partial t}
+$$
+
+The **streaming term** describes neutrons entering or leaving the volume due to their spatial movement:
+
+$$
+-\vec{v}\cdot\vec{\nabla}n
+$$
+
+The complete transport equation accounts for all positive and negative contributions to the neutron balance, including streaming, scattering, absorption, and fission.
+
+---
+
+# 3. Diffusion equation
+
+## 3.1 — Establishing the diffusion equation
+
+The neutron flux is related to neutron density by:
+
+$$
+\Phi(\vec r,E,\vec\Omega,t)=nv
+$$
+
+where:
+
+- $n$ is the neutron density
+- $v$ is the neutron velocity
+- $\Phi$ is the neutron flux
+
+The flux is expressed in:
+
+$$
+[\Phi] = \text{n}\cdot\text{cm}^{-2}\cdot\text{s}^{-1}
+$$
+
+We want to study the evolution of neutron density.
+
+Since:
+
+$$
+n = \frac{\Phi}{v}
+$$
+
+we have:
+
+$$
+\frac{\partial n}{\partial t}
+=
+\frac{\partial}{\partial t}
+\left(
+\frac{\Phi}{v}
+\right)
+$$
+
+Assuming that $v$ does not change with time:
+
+$$
+\boxed{
+\frac{\partial n}{\partial t}
+=
+\frac{1}{v}
+\frac{\partial \Phi}{\partial t}
+}
+$$
+
+For a volume containing $n$ neutrons, we then need to account for all mechanisms that contribute positively or negatively to the neutron population.
+
+---
+
+# 4. One-group / diffusion theory
+
+Further notes to be completed.
+
+---
+
+# 5. Neutron slowing down
+
+Further notes to be completed.
+
+---
+
+# 6. Resonant absorption of neutrons
+
+Further notes to be completed.
+
+---
+
+# 7. Thermalisation of neutrons
+
+Further notes to be completed.
+
+---
+
+# 8. Multigroup theory
+
+Further notes to be completed.
+
+---
+
+# 9. Poisoning by fission products
+
+Further notes to be completed.
+
+---
+
+# 12. Fuel evolution
+
+## 12.1 — Fuel management
+
+| Fuel | Enrichment | Moderator | Coolant | Reactor |
+|---|---:|---|---|---|
+| U (metal) | 0.72% (natural) | Graphite | CO₂ | AGR / UNGG |
+| UO₂ | 0.72% (natural) | Graphite | CO₂ | HTR |
+| UO₂ | 0.72% (natural) | D₂O | D₂O | CANDU |
+| UO₂ | 3–4% | H₂O | H₂O | PWR |
+| UO₂ | 2% | Graphite | Boiling H₂O | RBMK |
+| UO₂ | 3% | H₂O | Boiling H₂O | BWR |
+| U₃Si₂ | 20% | H₂O | H₂O | OSIRIS |
+| U (metal) | 90% | H₂O | H₂O | ORPHÉE |
+| UO₂ + PuO₂ | 15% | — | Na | SFR |
+
+---
+
+# 13. Temperature effect
+
+Further notes to be completed.
+
+---
+
+# 14. Boltzmann equation
+
+Further notes to be completed.
