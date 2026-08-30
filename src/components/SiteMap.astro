@@ -152,10 +152,13 @@ const { pins } = Astro.props;
     const pins = JSON.parse(el.dataset.pins || '[]');
     console.log(pins)
 
-    const map = L.map(el);
+    const map = L.map(el, {
+  worldCopyJump: true,
+});
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19,
+      noWrap: false,
     }).addTo(map);
 
     // Group pins into per-category Leaflet layer groups
