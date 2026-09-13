@@ -47,7 +47,7 @@ const locations = defineCollection({
     name: z.string(),                   // e.g. "Chamonix, France"
     lat: z.number(),
     lng: z.number(),
-    list: z.enum(['travel', 'favorite', 'sport']),
+    list: z.enum(['travel', 'favorite', 'sport', 'concert']),
     // Only meaningful when list === 'sport', e.g. "ski", "surf", "climbing"
     sport: z.string().optional(),
     note: z.string().optional(),        // short blurb shown in the popup

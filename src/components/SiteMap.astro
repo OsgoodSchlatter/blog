@@ -8,7 +8,7 @@ export interface MapPin {
   image?: string;      // if present, renders a photo card popup
   date?: string;
   href?: string;
-  category: 'photo' | 'travel' | 'favorite' | 'sport';
+  category: 'photo' | 'travel' | 'favorite' | 'sport' | 'concert';
   sport?: string;       // only for category === 'sport', e.g. "ski", "surf"
 }
 
@@ -103,11 +103,12 @@ const { pins } = Astro.props;
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
 
-  type Category = 'photo' | 'travel' | 'favorite' | 'sport';
+  type Category = 'photo' | 'travel' | 'favorite' | 'sport' | 'concert';
 
   const CATEGORY_META: Record<string, { label: string; color: string }> = {
   places: { label: 'Places', color: '#3b6e5a' },
   favorite: { label: 'Places I like', color: '#a8461f' },
+  concert: { label: 'Concerts I did', color: '#a81f6a' },
   sport_ski:  { label: 'Ski',  color: '#2a8fbd' },
   sport_surf: { label: 'Surf', color: '#0fa3a3' },
   sport_other: { label: 'Other sports', color: '#8a5fd6' },
@@ -199,7 +200,7 @@ const { pins } = Astro.props;
     }
 
     // Build the legend / toggle UI, ordered sensibly
-const order = ['places', 'favorite', 'sport_ski', 'sport_surf', 'sport_other'];
+const order = ['places', 'favorite', 'sport_ski', 'sport_surf', 'sport_other', 'concert'];
     if (legendEl) {
       let html = '';
       for (const key of order) {
